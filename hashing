@@ -1,0 +1,86 @@
+m=int(input("size of table : "))
+
+class probing:
+    def hash_1(self,x):
+        return x%m
+
+    def linear(self,no,name):
+        print("Linear Probing.....")
+        nam=[]
+        noo=[]
+        for i in range(m):
+            nam.append(0)
+            noo.append(0)
+        for i in range(len(no)):
+            key=self.hash_1(no[i])
+            while(noo[key]!=0):
+                key=(key+1)%m
+            nam[key] = name[i]
+            noo[key]=no[i]
+        self.display(noo,nam)
+
+    def display(self,no,name):
+        print("key----->name-------->number")
+        for i in range(m):
+            print(i,"-------->",name[i],"-------->",no[i])
+
+    def is_prime(self,x):
+        for i in range(2,int(x/2)+1):
+            if(x%i==0):
+                return False
+        return True
+
+    def prime_no(self,x):
+        while True:
+            if(self.is_prime(x)):
+                return x
+            x=x-1
+
+    def hash_2(self,x):
+        p = self.prime_no(m - 1)
+        return p-(m % p)
+
+    def double(self,noo,nam):
+        print("Double hashing.....")
+        no=[]
+        name=[]
+        for i in range(m):
+            no.append(0)
+            name.append(0)
+        for i in range(len(noo)):
+            key1=self.hash_1(noo[i])
+            if(no[key1]==0):
+                no[key1]=noo[i]
+                name[key1]=nam[i]
+            else:
+                key2=self.hash_2(noo[i])
+                i=1
+                while True:
+                    key=(key1+i*key2)%m
+                    if(no[key]==0):
+                        no[key] = noo[i]
+                        name[key] = nam[i]
+                        break
+                    else:
+                        key2=key2+self.hash_2(noo[i])
+                    i=i+1
+        self.display(no,name)
+
+def main():
+    n=int(input("no of clients : "))
+    name=[]
+    no=[]
+
+    for i in range(n):
+        b = input("enter name : ")
+        name.append(b)
+        a=int(input("enter no. : "))
+        while(a<1000000000 or a>9999999999):
+            print("invalid no.")
+            a = int(input("enter no. : "))
+        no.append(a)
+
+    obj=probing()
+    obj.linear(no,name)
+    obj.double(no,name)
+main()
